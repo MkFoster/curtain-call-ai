@@ -1,5 +1,5 @@
 {
-  "standardDurationMilliSeconds": 1000,
+  "standardDurationMilliSeconds": 500,
   "cues": [
       { "type": "lights", "channelValues": {"1": 255, "2": 255} },
       { "type": "wait", "duration": "standard" },

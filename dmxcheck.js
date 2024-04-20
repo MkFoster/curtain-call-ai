@@ -11,17 +11,18 @@ let device;
     const rawJSON = await fs.readFile('dmx-test-sequence.json', 'utf8');
     const testSequence = JSON.parse(rawJSON);
 
-    testSequence.cue.forEach(cueObj => {
+    for (let i = 0; i < testSequence.cues.length; i++) {
+        const cueObj = testSequence.cues[i];
         switch (cueObj.type) {
             case "lights":
                 device.setChannels(cueObj.channelValues);
                 break;
             case "wait":
-                setTimeout(() => {}, testSequence.standardDurationMilliSeconds);
+                await new Promise(resolve => setTimeout(resolve, testSequence.standardDurationMilliSeconds));
                 break;
             default:
                 console.error(`Unknown cue type: ${cueObj.type}`);
                 break;
         }
-    });
+    }
 })();
