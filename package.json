@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@google/generative-ai": "^0.7.1",
     "enttec-open-dmx-usb": "^4.0.1",
     "johnny-five": "^2.1.0"
   }
