@@ -16,7 +16,7 @@ async function run() {
     const model = genAI.getGenerativeModel({ model: "gemini-pro"});
 
     // Get the prompt text from a file
-    const prompt = await fs.readFile('show-prompt.txt', 'utf-8');
+    const prompt = await fs.readFile('prompts/show-prompt.txt', 'utf-8');
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
