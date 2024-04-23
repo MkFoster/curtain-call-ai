@@ -14,14 +14,15 @@ const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
 async function generateScript() {
     // For text-only input, use the gemini-pro model
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
+    const modelName = "gemini-1.5-pro-latest";
+    const model = genAI.getGenerativeModel({ model: modelName });
 
     // Get the prompt text from a file
     const promptFile = "prompts/generate-show-prompt.txt";
     console.log(`Loading prompt from ${promptFile}`);
     const prompt = await fs.readFile(promptFile, "utf-8");
 
-    console.log("Calling Gemini");
+    console.log("Calling ", modelName);
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const rawJSON = response.text();

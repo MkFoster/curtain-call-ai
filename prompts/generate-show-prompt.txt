@@ -4,6 +4,7 @@ There are two toy magician dolls statically positioned on small stage lit by fou
 The magician standing on the left side of the stage is a teenage female, character1.
 The magician standing on the right side of the stage is a teenage male, character2.
 Write a new PG-rated five minute comedy sketch involving the two magicians.
+Each line will be read by a text to speech processor so don't include anything in a line that shouldn't be spoken.
 Use the DMX JSON configuration below to light the magicians from the front and rear to fit the mood.
 Output the script lines, pauses (wait times), and DMX lighting changes as cues in a JSON document and increment each audioFile line number.
 
