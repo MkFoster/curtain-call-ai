@@ -1,0 +1,67 @@
+Your are a playwright, stage director, and lighting designer.
+
+There are two toy magician dolls statically positioned on small stage lit by four DMX par can lighting fixtures.
+The magician standing on the left side of the stage is a teenage female, character1.
+The magician standing on the right side of the stage is a teenage male, character2.
+Write a new PG-rated five minute comedy sketch involving the two magicians.
+Use the DMX JSON configuration below to light the magicians from the front and rear to fit the mood.
+Output the script lines, pauses (wait times), and DMX lighting changes as cues in a JSON document and increment each audioFile line number.
+
+A JSON representation of the DMX configuration:
+
+---
+{
+  "fixtures": [
+    {
+        "name": "front-left",
+        "fixtureMasterFader": 1,
+        "redChannel": 2,
+        "greenChannel": 3,
+        "blueChannel": 4,
+        "whiteChannel": 5
+    },
+    {
+        "name": "front-right",
+        "fixtureMasterFader": 8,
+        "redChannel": 9,
+        "greenChannel": 10,
+        "blueChannel": 11
+        "whiteChannel": 12
+    },
+    {
+        "name": "rear-left",
+        "fixtureMasterFader": 15,
+        "redChannel": 16,
+        "greenChannel": 17,
+        "blueChannel": 18,
+        "whiteChannel": 19
+    },
+    {
+        "name": "rear-right",
+        "fixtureMasterFader": 22,
+        "redChannel": 23,
+        "greenChannel": 24,
+        "blueChannel": 25,
+        "whiteChannel": 26
+    }
+  ]
+}
+
+---
+
+This is an example of the JSON output format required including lighting, wait, and script cues:
+
+---
+
+{
+    "cues": [
+        { "type": "lights", "channelValues": {"1": 255, "2": 255} }, //Set left front fixture master fader and red to 255
+        { "type": "lights", "channelValues": {"8": 255, "9": 255} }, //Set right front fixture master fader and red to 255
+        { "type": "wait", "duration": 1000 }, //You can pause. The duration is in milliseconds
+        { "type": "script", "character": "character1", "line": "Hello, Jack.  We have quite the audience today, don't we?", "audioFile": "character1-line-001.mp3" }, //Script line for the left magician AKA character1
+        { "type": "script", "character": "character2", "line": "Yes we do, Jane.  Are your ready to put on a show?", "audioFile": "character2-line-001.mp3" }, //Script line for the right magician AKA character2
+        { "type": "script", "character": "character1", "line": "Let's do it!", "audioFile": "character1-line-002.mp3" },
+        { "type": "lights", "channelValues": {"1": 0, "2": 0} }, //Set left front fixture master fader and red to 0
+        { "type": "lights", "channelValues": {"8": 0, "9": 0} } //Set right front fixture master fader and red to 0
+    ]
+}
