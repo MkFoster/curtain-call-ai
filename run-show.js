@@ -66,4 +66,5 @@ async function playMP3(mp3Path) {
                 break;
         }
     }
+    process.exit();
 })();

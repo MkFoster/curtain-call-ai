@@ -1,7 +1,7 @@
 /**
  * Entry point for Curtain Call AI
  *
- * Run using "node --env-file=.env index.js"
+ * Run using "node --env-file=.env generate-show.js"
  * Access the Gemini API Key using process.env.API_KEY
  */
 

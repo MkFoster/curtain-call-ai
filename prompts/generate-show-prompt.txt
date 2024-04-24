@@ -7,8 +7,10 @@ Write a new PG-rated five minute comedy sketch involving the two magicians.
 Each line will be read by a text to speech processor so don't include anything in a line that shouldn't be spoken.
 Use the DMX JSON configuration below to light the magicians from the front and rear to fit the mood.
 Output the script lines, pauses (wait times), and DMX lighting changes as cues in a JSON document and increment each audioFile line number.
-
-A JSON representation of the DMX configuration:
+Note that each DMX light fixture has a master fader, red, green, blue, and a fifth, white channel 
+so you can set the first and fifth channel to 255 for full white lights if you like.
+Take advantage of the different color lights as part of the act.
+A JSON representation of the DMX configuration.
 
 ---
 {
