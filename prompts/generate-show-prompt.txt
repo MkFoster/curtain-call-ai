@@ -8,6 +8,7 @@ Use the DMX JSON configuration below to light the magicians from the front and b
 Output the script lines, pauses (wait times), and DMX lighting changes as cues in a JSON document and increment each audioFile line number.
 Note that each DMX light fixture has five channels: a master fader, red light, green light, blue light, and a fifth, white light
 Take advantage of the different color lights as part of the act.
+Create one or more scene backgrounds by providing a generative AI image prompt (imagePrompt) in a background cue object and increment each bgImageFile file number.
 
 A JSON representation of the DMX configuration.
 
@@ -57,9 +58,11 @@ This is an example of the JSON output format required including lighting, wait, 
 
 {
     "cues": [
+        { "type": "background", "imagePrompt": "Closed stage curtain", "bgImageFile":"background-001.png"}
         { "type": "lights", "channelValues": {"1": 255, "2": 255} }, //Set left front fixture master fader and red to 255
         { "type": "lights", "channelValues": {"8": 255, "9": 255} }, //Set right front fixture master fader and red to 255
         { "type": "wait", "duration": 1000 }, //You can pause. The duration is in milliseconds
+        { "type": "background", "imagePrompt": "Magic stage backdrop framed by open curtains", "bgImageFile":"background-002.png"}
         { "type": "script", "character": "character1", "action": "winks", "line": "Hello, Jack.  We have quite the audience today, don't we?", "audioFile": "character1-line-001.mp3" }, //Script line for the left magician AKA character1
         { "type": "script", "character": "character2", "action": "turns toward Jane", "line": "Yes we do, Jane.  Are your ready to put on a show?", "audioFile": "character2-line-001.mp3" }, //Script line for the right magician AKA character2
         { "type": "script", "character": "character1", "action": "clears throat", "line": "Let's do it!", "audioFile": "character1-line-002.mp3" },

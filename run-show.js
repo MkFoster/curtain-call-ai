@@ -3,6 +3,7 @@ const dmxDevice = dmx.EnttecOpenDMXUSBDevice;
 const fs = require("fs").promises;
 const textToSpeech = require("@google-cloud/text-to-speech");
 const { spawn } = require("node:child_process");
+const path = require("path");
 
 let device;
 
@@ -28,6 +29,24 @@ async function playMP3(mp3Path) {
     }
 }
 
+async function displayImage(imagePath) {
+    try {
+        // Spawn the Irfanview process
+        const child = spawn(
+            "C:\\Program Files\\IrfanView\\i_view64.exe",
+            [imagePath, "/fs"],
+            {
+                detached: true,
+                stdio: "ignore",
+            }
+        );
+        child.unref();
+        console.log("Displaying :", imagePath);
+    } catch (error) {
+        console.error("Error displaying image:", error);
+    }
+}
+
 // Run the show
 (async () => {
     let lightingEnabled = true;
@@ -41,7 +60,7 @@ async function playMP3(mp3Path) {
         lightingEnabled = false;
     }
 
-    const showFolder = "shows/";
+    const showFolder = "shows" + path.sep;
     const rawJSON = await fs.readFile(showFolder + "script.json", "utf8");
     const show = JSON.parse(rawJSON);
 
@@ -60,6 +79,11 @@ async function playMP3(mp3Path) {
                 break;
             case "script":
                 await playMP3(showFolder + cueObj.audioFile);
+                break;
+            case "background":
+                await displayImage(
+                    __dirname + path.sep + showFolder + cueObj.bgImageFile
+                );
                 break;
             default:
                 console.error(`Unknown cue type: ${cueObj.type}`);

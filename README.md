@@ -14,6 +14,11 @@ gcloud auth application-default login
 -   Checkout this repo
 -   CD into the checkout folder (I.e., cd curtain-call-ai)
 -   Run "npm i" to install all the Node dependencies
+-   Create a .env file in the checkout folder and add a line with your Gemini API key:
+
+```
+API_KEY=YOUR-API-KEY
+```
 
 ### Windows MP3 player setup
 
@@ -22,3 +27,12 @@ gcloud auth application-default login
 ### Linux MP3 player setup
 
 -   TBD
+
+### Scene background image generation
+
+-   This is optional, but if you would like to put a monitor behind the stage to act as a scene background, you can generate the image using Imagen 2 or DALL-E. I didn't have access to Imagen 2 at as of this writing so I used DALL-E.
+    If you are using Dall-E put your OpenAI key in your .env file like this:
+
+```
+OPENAI_KEY=YOUR-OPENAI-KEY
+```
