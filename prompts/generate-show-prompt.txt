@@ -7,12 +7,13 @@ Write a new PG-rated five minute comedy sketch involving the two magicians.
 Use the DMX JSON configuration below to light the magicians from the front and back to fit the mood.
 Output the script lines, pauses (wait times), and DMX lighting changes as cues in a JSON document and increment each audioFile line number.
 Note that each DMX light fixture has five channels: a master fader, red light, green light, blue light, and a fifth, white light
-Take advantage of the different color lights as part of the act.
+Take advantage of the different color lights as part of the act.  Combine colors and leverage different brightness levels from 0-255.
 Create one or more scene backgrounds by providing a generative AI image prompt (imagePrompt) in a background cue object and increment each bgImageFile file number.
 
-A JSON representation of the DMX configuration.
+A JSON representation of the DMX configuration:
 
 ---
+
 {
   "fixtures": [
     {
@@ -52,6 +53,49 @@ A JSON representation of the DMX configuration.
 
 ---
 
+This is the sound effect library in JSON.  Only sound effects from this library may be used:
+
+---
+
+[
+    {
+        "audioFile": "audience-applause.wav",
+        "description": "Audience applause to play at the end or beginning of the show or after a success"
+    },
+    {
+        "audioFile": "magic-flash.wav",
+        "description": "Magic flash! sound effect"
+    },
+    {
+        "audioFile": "magic-orchestral-hit.wav",
+        "description": "Short magical orchestral hit"
+    },
+    { "audioFile": "magic-whoosh", "description": "Magical Whoosh! sound" },
+    { "audioFile": "magic-zap", "description": "Magic zap! sound" },
+    {
+        "audioFile": "magic-shimmer.wav",
+        "description": "Magic shimmer sound effect"
+    },
+    {
+        "audioFile": "magic-chimes.wav",
+        "description": "Magic chimes sound effect"
+    },
+    {
+        "audioFile": "audience-laughing.wav",
+        "description": "Audience laughing"
+    },
+    {
+        "audioFile": "silly-boing-drum-fail.wav",
+        "description": "A silly, elastic drum hit that you might play after a failure"
+    },
+    {
+        "audioFile": "silly-trumpet-plunger-wah-wah-fail.wav",
+        "description": "A silly trumpet plunger wah wah to play after a failed attempt"
+    }
+]
+
+---
+
 This is an example of the JSON output format required including lighting, wait, and script cues:
 
 ---
@@ -61,6 +105,7 @@ This is an example of the JSON output format required including lighting, wait, 
         { "type": "background", "imagePrompt": "Closed stage curtain", "bgImageFile":"background-001.png"}
         { "type": "lights", "channelValues": {"1": 255, "2": 255} }, //Set left front fixture master fader and red to 255
         { "type": "lights", "channelValues": {"8": 255, "9": 255} }, //Set right front fixture master fader and red to 255
+        { "type": "soundEffect", "audioFile": "audience-applause.wav"},  //Example of a sound effect from the library
         { "type": "wait", "duration": 1000 }, //You can pause. The duration is in milliseconds
         { "type": "background", "imagePrompt": "Magic stage backdrop framed by open curtains", "bgImageFile":"background-002.png"}
         { "type": "script", "character": "character1", "action": "winks", "line": "Hello, Jack.  We have quite the audience today, don't we?", "audioFile": "character1-line-001.mp3" }, //Script line for the left magician AKA character1

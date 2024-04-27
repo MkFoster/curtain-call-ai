@@ -61,6 +61,7 @@ async function displayImage(imagePath) {
     }
 
     const showFolder = "shows" + path.sep;
+    const soundFolder = "sound-effects" + path.sep;
     const rawJSON = await fs.readFile(showFolder + "script.json", "utf8");
     const show = JSON.parse(rawJSON);
 
@@ -79,6 +80,9 @@ async function displayImage(imagePath) {
                 break;
             case "script":
                 await playMP3(showFolder + cueObj.audioFile);
+                break;
+            case "soundEffect":
+                await playMP3(soundFolder + cueObj.audioFile);
                 break;
             case "background":
                 await displayImage(
