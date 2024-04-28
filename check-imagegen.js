@@ -1,35 +1,51 @@
-const OpenAI = require("openai");
+const axios = require("axios");
 const fs = require("fs");
-const { pipeline } = require("node:stream/promises");
+const util = require("util");
+const exec = util.promisify(require("child_process").exec);
+
+const imageGenEndpointUrl = `https://${process.env.GCP_LOCATION}-aiplatform.googleapis.com/v1/projects/${process.env.GCP_PROJECT_ID}/locations/${process.env.GCP_LOCATION}/publishers/google/models/imagegeneration@006:predict`;
+
+async function getAccessToken() {
+    try {
+        const { stdout } = await exec("gcloud auth print-access-token");
+        return stdout.trim(); // Remove any trailing newline characters
+    } catch (error) {
+        console.error("Error getting access token:", error);
+        throw error; // Re-throw to allow handling in generateImage function
+    }
+}
 
 async function generateAndDownloadImage(prompt, outputPath) {
+    const requestData = {
+        instances: [
+            {
+                prompt: prompt,
+            },
+        ],
+        parameters: {
+            sampleCount: 1,
+            aspectRatio: "16:9",
+        },
+    };
     try {
-        const openai = new OpenAI({
-            apiKey: process.env.OPENAI_KEY,
+        // Get access token (replace with your actual method)
+        const accessToken = await getAccessToken(); // Replace with your token retrieval method
+
+        const response = await axios.post(imageGenEndpointUrl, requestData, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-Type": "application/json; charset=utf-8",
+            },
         });
 
-        const image = await openai.images.generate({
-            model: "dall-e-3",
-            size: "1792x1024",
-            prompt: prompt,
-        });
+        // Parse the response
+        const responseData = response.data;
+        const imageDataBase64 = responseData.predictions[0].bytesBase64Encoded;
 
-        console.log(image);
-
-        const revisedPrompt = image.data[0].revised_prompt;
-        const imageURL = image.data[0].url;
-
-        // Download the image from the imageURL and save it to a file
-        const response = await fetch(imageURL);
-        if (!response.ok) {
-            throw new Error(
-                `Failed to fetch the image: ${response.statusText}`
-            );
-        }
-        await pipeline(response.body, fs.createWriteStream(outputPath));
-        console.log("Download completed successfully");
-
-        console.log(`Image has been saved to ${outputPath}`);
+        // Decode base64 and save image
+        const buffer = Buffer.from(imageDataBase64, "base64");
+        fs.writeFileSync(outputPath, buffer);
+        console.log("Image saved to: ", outputPath);
     } catch (error) {
         console.error("Failed to generate or download the image:", error);
     }
@@ -37,6 +53,6 @@ async function generateAndDownloadImage(prompt, outputPath) {
 
 // Example usage:
 generateAndDownloadImage(
-    "A futuristic city skyline at night.",
+    "Stage with the curtains open.",
     "shows/test-image.png"
 );

@@ -5,15 +5,30 @@
  * Access the Gemini API Key using process.env.API_KEY
  */
 
+const axios = require("axios");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const textToSpeech = require("@google-cloud/text-to-speech");
 const fsp = require("fs").promises;
 const fs = require("fs");
-const OpenAI = require("openai");
-const { pipeline } = require("node:stream/promises");
+//const OpenAI = require("openai");
+//const { pipeline } = require("node:stream/promises");
+const util = require("util");
+const exec = util.promisify(require("child_process").exec);
 
 // Access your API key as an environment variable (see "Set up your API key" above)
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
+
+const imageGenEndpointUrl = `https://${process.env.GCP_LOCATION}-aiplatform.googleapis.com/v1/projects/${process.env.GCP_PROJECT_ID}/locations/${process.env.GCP_LOCATION}/publishers/google/models/imagegeneration@006:predict`;
+
+async function getAccessToken() {
+    try {
+        const { stdout } = await exec("gcloud auth print-access-token");
+        return stdout.trim(); // Remove any trailing newline characters
+    } catch (error) {
+        console.error("Error getting access token:", error);
+        throw error; // Re-throw to allow handling in generateImage function
+    }
+}
 
 async function generateScript() {
     // For text-only input, use the gemini-pro model
@@ -91,6 +106,44 @@ async function generateScriptAudio(character, line, audioFile) {
 }
 
 async function generateAndDownloadImage(prompt, bgImageFile) {
+    const requestData = {
+        instances: [
+            {
+                prompt: prompt,
+            },
+        ],
+        parameters: {
+            sampleCount: 1,
+            aspectRatio: "16:9",
+        },
+    };
+    try {
+        // Get access token (replace with your actual method)
+        const accessToken = await getAccessToken(); // Replace with your token retrieval method
+
+        const response = await axios.post(imageGenEndpointUrl, requestData, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-Type": "application/json; charset=utf-8",
+            },
+        });
+
+        // Parse the response
+        const responseData = response.data;
+        const imageDataBase64 = responseData.predictions[0].bytesBase64Encoded;
+
+        // Decode base64 and save image
+        const buffer = Buffer.from(imageDataBase64, "base64");
+        fs.writeFileSync(bgImageFile, buffer);
+        console.log(`Image generated and written to file: ${bgImageFile}`);
+    } catch (error) {
+        console.error("Failed to generate or download the image:", error);
+    }
+}
+
+/*
+// DALL-E OpenAI version
+async function generateAndDownloadImage(prompt, bgImageFile) {
     try {
         const openai = new OpenAI({
             apiKey: process.env.OPENAI_KEY,
@@ -118,6 +171,7 @@ async function generateAndDownloadImage(prompt, bgImageFile) {
         console.error("Failed to generate or download the image:", error);
     }
 }
+*/
 
 // Loop over the show cues and generate voice audio, images, etc.
 async function generateShowAssets(scriptObj) {
