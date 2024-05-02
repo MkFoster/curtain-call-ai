@@ -30,9 +30,8 @@ API_KEY=YOUR-API-KEY
 
 ### Scene background image generation
 
--   This is optional, but if you would like to put a monitor behind the stage to act as a scene background, you can generate the image using Imagen 2 or DALL-E. I didn't have access to Imagen 2 at as of this writing so I used DALL-E.
-    If you are using Dall-E put your OpenAI key in your .env file like this:
+-   This is optional, but if you would like to put a monitor behind the stage to act as a scene background, you can generate the image using Imagen 2
 
-```
-OPENAI_KEY=YOUR-OPENAI-KEY
-```
+### Setup Irfanview for displaying background images on Windows
+
+-   Download and install [Irfanview](https://www.irfanview.com/)

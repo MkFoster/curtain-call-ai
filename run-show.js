@@ -1,4 +1,4 @@
-const {Board, Servo} = require("johnny-five");
+const { Board, Servo } = require("johnny-five");
 const dmx = require("enttec-open-dmx-usb");
 const dmxDevice = dmx.EnttecOpenDMXUSBDevice;
 const fs = require("fs").promises;
@@ -7,7 +7,6 @@ const { spawn } = require("node:child_process");
 const path = require("path");
 
 const boardComPort = "COM6";
-
 
 // Run the show
 (async () => {
@@ -32,19 +31,19 @@ const boardComPort = "COM6";
         board = await getBoard(boardComPort);
         character1Servo = new Servo({
             pin: 10,
-            range: [ 10, 170 ],
-            startAt: 90
+            range: [10, 170],
+            startAt: 90,
         });
-    
+
         character2Servo = new Servo({
             pin: 11,
-            range: [ 10, 170 ],
-            startAt: 90
+            range: [10, 170],
+            startAt: 90,
         });
     } catch (error) {
         console.log(
-        "No Board found.  Proceeding without animations.  Error: ",
-        error
+            "No Board found.  Proceeding without animations.  Error: ",
+            error
         );
         boardEnabled = false;
     }
@@ -72,9 +71,9 @@ const boardComPort = "COM6";
                 await playMP3(soundFolder + cueObj.audioFile);
                 break;
             case "background":
-                /*await displayImage(
+                await displayImage(
                     __dirname + path.sep + showFolder + cueObj.bgImageFile
-                );*/
+                );
                 break;
             case "animate":
                 if (boardEnabled) {
@@ -116,22 +115,20 @@ const boardComPort = "COM6";
 })();
 
 async function sleep(durationMilliseconds) {
-    await new Promise((resolve) =>
-        setTimeout(resolve, durationMilliseconds)
-    );
+    await new Promise((resolve) => setTimeout(resolve, durationMilliseconds));
 }
 
 async function getBoard(arduinoComPort) {
     return new Promise((resolve, reject) => {
-      const board = new Board({ port: arduinoComPort });
-      board.on("ready", function () {
-        // Board is ready, resolve the promise with the board object
-        resolve(board);
-      });
-      board.on("error", function (error) {
-        // Board error, reject the promise with the error
-        reject(error);
-      });
+        const board = new Board({ port: arduinoComPort });
+        board.on("ready", function () {
+            // Board is ready, resolve the promise with the board object
+            resolve(board);
+        });
+        board.on("error", function (error) {
+            // Board error, reject the promise with the error
+            reject(error);
+        });
     });
 }
 
@@ -174,4 +171,3 @@ async function displayImage(imagePath) {
         console.error("Error displaying image:", error);
     }
 }
-

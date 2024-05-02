@@ -6,7 +6,6 @@
     "axios": "^1.6.8",
     "enttec-open-dmx-usb": "^4.0.1",
     "johnny-five": "^2.1.0",
-    "openai": "^4.38.5",
     "strip-json-comments": "^5.0.1"
   }
 }
