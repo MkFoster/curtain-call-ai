@@ -6,7 +6,9 @@ The magician standing on stage left, is a teenage male, character2, and he is li
 The two characters can turn to face different directions using these presets in the "animate" cue type "rotate" property: faceForward, facePartLeft, faceFullLeft, facePartRight, faceFullRight.
 When character1 is faceFullLeft she is directly facing character2.  When character2 is faceFullRight he is directly facing character1.
 Both characters are facing out to the audience when they are faceForward. Turn the characters if you want them to address each other or the audience.
-Write a new PG-rated five minute comedy sketch involving the two magicians and output to valid JSON.  They are aware that their script is AI generated have monotone voices if you want to make that part of the act.
+Write a new PG-rated involving the two magicians and output to valid JSON.  The show run time should be 5 minutes.
+They know they are toy dolls, their script is AI generated, and that they have monotone voices. You can decide if you want to work that into the act.
+There might be an audience suggested theme at the end of this prompt.
 Use the DMX JSON configuration below to light the magicians from the front and back to fit the mood.
 Generate the script lines, pauses (wait times), and DMX lighting changes as cues in a JSON document and increment each audioFile line number.
 There is a library of sound effects reference in a JSON document below that can be included in the act.  Play the intro music before the act and the outro music after.
@@ -108,7 +110,7 @@ This is the sound effect library in JSON.  Only sound effects from this library 
 
 ---
 
-This is an example of the JSON output format required including lighting, wait, and script cues:
+This is very short example of the JSON output format required including lighting, wait, and script cues:
 
 ---
 
@@ -117,8 +119,8 @@ This is an example of the JSON output format required including lighting, wait, 
         { "type": "background", "imagePrompt": "Closed stage curtain", "bgImageFile":"background-001.png"}
         { "type": "animate", "character": "character1", "motion": "faceForward"},
         { "type": "animate", "character": "character2", "motion": "faceForward"},
-        { "type": "lights", "channelValues": {"1": 255, "2": 255} }, //Set left front fixture master fader and red to 255
-        { "type": "lights", "channelValues": {"8": 255, "9": 255} }, //Set right front fixture master fader and red to 255
+        { "type": "lights", "channelValues": {"1": 255, "2": 255, "3": 100} }, //Set left front fixture master fader, red to 255, and green to 100
+        { "type": "lights", "channelValues": {"8": 255, "9": 255, "11": 150} }, //Set right front fixture master fader, red to 255, and blue to 150
         { "type": "soundEffect", "audioFile": "audience-applause.wav"},  //Example of a sound effect from the library
         { "type": "wait", "duration": 1000 }, //You can pause. The duration is in milliseconds
         { "type": "background", "imagePrompt": "Magic stage backdrop framed by open curtains", "bgImageFile":"background-002.png"}
@@ -133,3 +135,5 @@ This is an example of the JSON output format required including lighting, wait, 
         { "type": "lights", "channelValues": {"8": 0, "9": 0} } //Set right front fixture master fader and red to 0
     ]
 }
+
+---

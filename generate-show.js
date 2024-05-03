@@ -10,14 +10,15 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const textToSpeech = require("@google-cloud/text-to-speech");
 const fsp = require("fs").promises;
 const fs = require("fs");
-//const OpenAI = require("openai");
-//const { pipeline } = require("node:stream/promises");
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
+const readline = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
 
 // Access your API key as an environment variable (see "Set up your API key" above)
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
-
 const imageGenEndpointUrl = `https://${process.env.GCP_LOCATION}-aiplatform.googleapis.com/v1/projects/${process.env.GCP_PROJECT_ID}/locations/${process.env.GCP_LOCATION}/publishers/google/models/imagegeneration@006:predict`;
 
 async function getAccessToken() {
@@ -30,15 +31,23 @@ async function getAccessToken() {
     }
 }
 
-async function generateScript() {
+async function generateScript(showTheme) {
     // For text-only input, use the gemini-pro model
     const modelName = "gemini-1.5-pro-latest";
-    const model = genAI.getGenerativeModel({ model: modelName });
+    const model = genAI.getGenerativeModel({
+        model: modelName,
+        generation_config: { response_mime_type: "application/json" },
+    });
 
     // Get the prompt text from a file
     const promptFile = "prompts/generate-show-prompt.txt";
     console.log(`Loading prompt from ${promptFile}`);
-    const prompt = await fsp.readFile(promptFile, "utf-8");
+    let prompt = await fsp.readFile(promptFile, "utf-8");
+
+    // Add show theme to the prompt if provided
+    if (showTheme) {
+        prompt += `\nTheme: ${showTheme}`;
+    }
 
     console.log("Calling ", modelName);
     const result = await model.generateContent(prompt);
@@ -130,6 +139,12 @@ async function generateAndDownloadImage(prompt, bgImageFile) {
 
         // Parse the response
         const responseData = response.data;
+        if (responseData.error || !responseData.predictions) {
+            console.error("Error generating image:", responseData.error);
+            console.log("Response data:", responseData);
+            return;
+        }
+
         const imageDataBase64 = responseData.predictions[0].bytesBase64Encoded;
 
         // Decode base64 and save image
@@ -140,38 +155,6 @@ async function generateAndDownloadImage(prompt, bgImageFile) {
         console.error("Failed to generate or download the image:", error);
     }
 }
-
-/*
-// DALL-E OpenAI version
-async function generateAndDownloadImage(prompt, bgImageFile) {
-    try {
-        const openai = new OpenAI({
-            apiKey: process.env.OPENAI_KEY,
-        });
-
-        const image = await openai.images.generate({
-            model: "dall-e-3",
-            size: "1792x1024",
-            prompt: prompt,
-        });
-
-        //const revisedPrompt = image.data[0].revised_prompt;
-        const imageURL = image.data[0].url;
-
-        // Download the image from the imageURL and save it to a file
-        const response = await fetch(imageURL);
-        if (!response.ok) {
-            throw new Error(
-                `Failed to fetch the image: ${response.statusText}`
-            );
-        }
-        await pipeline(response.body, fs.createWriteStream(bgImageFile));
-        console.log(`Image generated and written to file: ${bgImageFile}`);
-    } catch (error) {
-        console.error("Failed to generate or download the image:", error);
-    }
-}
-*/
 
 // Loop over the show cues and generate voice audio, images, etc.
 async function generateShowAssets(scriptObj) {
@@ -196,9 +179,14 @@ async function generateShowAssets(scriptObj) {
 }
 
 (async () => {
-    // Generate our script including lighting cues
-    const script = await generateScript();
+    // Prompt the user for a show theme
+    readline.question("Enter a show theme (optional): ", async (showTheme) => {
+        // Generate our script including lighting cues
+        const script = await generateScript(showTheme);
 
-    // Generate show assets including audio files, images, etc.
-    await generateShowAssets(script);
+        // Generate show assets including audio files, images, etc.
+        await generateShowAssets(script);
+
+        readline.close();
+    });
 })();
