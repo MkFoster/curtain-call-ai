@@ -2,7 +2,6 @@ const { Board, Servo } = require("johnny-five");
 const dmx = require("enttec-open-dmx-usb");
 const dmxDevice = dmx.EnttecOpenDMXUSBDevice;
 const fs = require("fs").promises;
-const textToSpeech = require("@google-cloud/text-to-speech");
 const { spawn } = require("node:child_process");
 const path = require("path");
 
